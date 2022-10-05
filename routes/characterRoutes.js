@@ -2,6 +2,11 @@ const express = require('express');
 
 //middlewares
 const { characterExist } = require('../middlewares/characterMiddleware');
+const {
+  protectToken,
+  protectAdmin,
+  checkToken,
+} = require('../middlewares/usersMiddlewares');
 
 //controllers
 const {
@@ -17,14 +22,17 @@ const { upload } = require('../utils/multer');
 
 const router = express.Router();
 
+router.route('/').get(getAllCharacters).get(characterExist, getCharacterById);
+
+router.use(protectToken, protectAdmin);
+router.get('/check-token', checkToken);
+
 router
   .route('/')
-  .get(getAllCharacters)
-  .post(upload.single('imgCharacter'), createCharacter);
+  .post(upload.single('imgCharacter'), protectAdmin, createCharacter);
 
 router
   .route('/:id')
-  .get(characterExist, getCharacterById)
   .patch(characterExist, updateCharacter)
   .delete(characterExist, deleteCharacter);
 

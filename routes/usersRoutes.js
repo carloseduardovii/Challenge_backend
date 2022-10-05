@@ -5,6 +5,8 @@ const {
   userExists,
   protectToken,
   protectAccountOwner,
+  protectAdmin,
+  checkToken,
 } = require('../middlewares/usersMiddlewares');
 
 // Controller
@@ -15,25 +17,24 @@ const {
   updateUser,
   deleteUser,
   login,
-  checkToken,
 } = require('../controllers/usersController');
 
 const router = express.Router();
 
-router.post('/', createUser);
+router.post('/auth/register', createUser);
 
-router.post('/login', login);
+router.post('/auth/login', login);
 
 // Apply protectToken middleware
 router.use(protectToken);
 
-router.get('/', getAllUsers);
+router.get('/', protectAdmin, getAllUsers);
 
 router.get('/check-token', checkToken);
 
 router
   .route('/:id')
-  .get(userExists, getUserById)
+  .get(userExists, protectAdmin, getUserById)
   .patch(userExists, protectAccountOwner, updateUser)
   .delete(userExists, protectAccountOwner, deleteUser);
 

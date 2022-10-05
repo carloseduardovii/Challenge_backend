@@ -20,8 +20,8 @@ const { storage } = require('../utils/firebase');
 const getAllMovies = catchAsync(async (req, res, next) => {
   const movies = await Movie.findAll({
     where: { status: 'active' },
-    attributes: ['id', 'movieImgUrl', 'title', 'releaseDate', 'rate'],
-    include: { model: Genre, attributes: ['name'] },
+    attributes: { exclude: ['createdAt', 'updatedAt'] },
+    include: { model: Genre },
     include: { model: Character, attributes: ['characterImgUrl', 'name'] },
   });
 
@@ -40,7 +40,6 @@ const getAllMovies = catchAsync(async (req, res, next) => {
 });
 
 const getMovieByParameter = catchAsync(async (req, res, next) => {
-  //const { query } = req;
   const { id } = req.params;
 
   const movie = await Movie.findOne({
@@ -62,7 +61,6 @@ const getMovieByParameter = catchAsync(async (req, res, next) => {
 
 const createMovie = catchAsync(async (req, res, next) => {
   const { movieImgUrl, title, genreId, releaseDate, rate } = req.body;
-  //const { sessionUser } = req;
 
   // console.log(req.file);
   // console.table(req.body);
@@ -83,7 +81,6 @@ const createMovie = catchAsync(async (req, res, next) => {
     genreId,
     releaseDate,
     rate,
-    //userId: sessionUser.id,
   });
 
   res.status(201).json({ status: 'success', newMovie });

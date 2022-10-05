@@ -1,7 +1,12 @@
 const express = require('express');
 
 //middlewares
-//const { movieExist } = require('../middlewares/movieMiddleware');
+const {
+  protectToken,
+  protectAdmin,
+  protectAccountOwner,
+  checkToken,
+} = require('../middlewares/usersMiddlewares');
 
 //controlles
 const {
@@ -16,7 +21,10 @@ const {
 //Routes
 const router = express.Router();
 
-router.route('/').get(getAllGenres).post(createGenre);
+router.use(protectToken);
+router.get('/check-token', checkToken);
+
+router.route('/').get(getAllGenres).post(protectAdmin, createGenre);
 
 router.route('/:id').patch(updateGenre).delete(deleteGenre);
 

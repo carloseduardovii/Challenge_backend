@@ -51,20 +51,23 @@ const getUserById = catchAsync(async (req, res, next) => {
 
 const updateUser = catchAsync(async (req, res, next) => {
   const { user } = req;
-  const { name } = req.body;
+  const { name, email, password } = req.body;
 
-  await user.update({ name });
+  const userUpdated = await user.update({ name, email, password });
 
-  res.status(200).json({ status: 'success' });
+  res.status(200).json({
+    status: 'Your account have been updated successfully',
+    userUpdated,
+  });
 });
 
 const deleteUser = catchAsync(async (req, res, next) => {
   const { user } = req;
 
-  await user.update({ status: 'deleted' });
+  await user.update({ status: 'deactivated' });
 
   res.status(200).json({
-    status: 'success',
+    status: 'Your account have been deleted successfully',
   });
 });
 
@@ -76,7 +79,7 @@ const login = catchAsync(async (req, res, next) => {
     where: { email, status: 'active' },
   });
 
-  // Compare password with db
+  // Compare password with database
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return next(new AppError('Invalid credentials', 400));
   }
@@ -91,10 +94,6 @@ const login = catchAsync(async (req, res, next) => {
   res.status(200).json({ token, user });
 });
 
-const checkToken = catchAsync(async (req, res, next) => {
-  res.status(200).json({ user: req.sessionUser });
-});
-
 module.exports = {
   getAllUsers,
   createUser,
@@ -102,5 +101,4 @@ module.exports = {
   updateUser,
   deleteUser,
   login,
-  checkToken,
 };

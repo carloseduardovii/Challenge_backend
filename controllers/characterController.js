@@ -24,7 +24,6 @@ const getAllCharacters = catchAsync(async (req, res, next) => {
       model: Movie,
       attributes: { exclude: ['createdAt', 'updatedAt'] },
     },
-    //  attributes: ['name'],
   });
 
   const charactersPromise = characters.map(async character => {
@@ -43,7 +42,6 @@ const getAllCharacters = catchAsync(async (req, res, next) => {
 
 const getCharacterById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  // const { sessionuser } = req;
 
   const character = await Character.findOne({
     where: {
@@ -57,8 +55,6 @@ const getCharacterById = catchAsync(async (req, res, next) => {
     },
   });
 
-  // sessionUser.id
-
   //Get URL image from firebase
   const imgRef = ref(storage, character.characterImgUrl);
   const url = await getDownloadURL(imgRef);
@@ -71,7 +67,6 @@ const getCharacterById = catchAsync(async (req, res, next) => {
 
 const createCharacter = catchAsync(async (req, res, next) => {
   const { characterImgUrl, name, age, weigth, history, movieId } = req.body;
-  // const { usersession } = req;
 
   //Creating route of img files and upload them to firebase
   const imgRef = ref(storage, `characters/${req.file.originalname}`);
@@ -89,7 +84,6 @@ const createCharacter = catchAsync(async (req, res, next) => {
     weigth,
     history,
     movieId,
-    // userId: sessionUser.id,
   });
 
   res.status(201).json({

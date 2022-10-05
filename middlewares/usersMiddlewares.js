@@ -80,9 +80,14 @@ const protectAccountOwner = catchAsync(async (req, res, next) => {
   next();
 });
 
+const checkToken = catchAsync(async (req, res, next) => {
+  res.status(200).json({ user: req.sessionUser });
+});
+
 module.exports = {
   userExists,
   protectToken,
   protectAdmin,
   protectAccountOwner,
+  checkToken,
 };

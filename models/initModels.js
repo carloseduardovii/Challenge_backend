@@ -18,9 +18,13 @@ const initModels = () => {
   Character.hasMany(ImgCharacter, { foreignKey: 'characterId' });
   ImgCharacter.belongsTo(Character);
 
-  // 1 Movie ==> some Genres
-  Genre.hasOne(Movie, { foreignKey: 'genreId' });
+  // 1 Genre ==> many movies
+  Genre.hasMany(Movie, { foreignKey: 'genreId' });
   Movie.belongsTo(Genre);
+
+  // 1 Movie ==> one genre
+  Movie.hasOne(Genre);
+  Genre.belongsTo(Movie);
 };
 
 module.exports = { initModels };
