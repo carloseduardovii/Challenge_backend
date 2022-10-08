@@ -110,7 +110,7 @@ const deleteCharacter = catchAsync(async (req, res, next) => {
 
   const character = await Character.findOne({ where: { id } });
 
-  await character.update({ status: 'deleted' });
+  await character.update({ status: 'deativated' });
 
   res.status(200).json({ status: 'Product have been deleted successfully' });
 });

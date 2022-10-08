@@ -29,7 +29,25 @@ const createGenre = catchAsync(async (req, res, next) => {
     .status(201)
     .json({ status: 'Genre have been created successfully', newGenre });
 });
-const updateGenre = catchAsync(async (req, res, next) => {});
-const deleteGenre = catchAsync(async (req, res, next) => {});
+const updateGenre = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const { name } = req.body;
+
+  const updatedGenre = await Genre.update({ name });
+
+  res
+    .status(200)
+    .json({ status: 'Genre have been updated successfully', updatedGenre });
+});
+const deleteGenre = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const deletedGenre = await Genre.findOne({ where: { id } });
+
+  await deletedGenre.update({ status: 'deativated' });
+
+  res.status(200).json({ status: 'Genre have been deleted successfully' });
+});
 
 module.exports = { getAllGenres, createGenre, updateGenre, deleteGenre };

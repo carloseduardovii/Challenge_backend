@@ -8,8 +8,9 @@ const { User } = require('../models/userModel');
 // Utils
 const { catchAsync } = require('../utils/catchAsync');
 const { AppError } = require('../utils/appError');
+const { Email } = require('../utils/email');
 
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: './set.env' });
 
 //CRUD's
 const getAllUsers = catchAsync(async (req, res, next) => {
@@ -34,6 +35,8 @@ const createUser = catchAsync(async (req, res, next) => {
     password: hashPassword,
     role,
   });
+
+  await new Email(newUser.email).sendWelcome(newUser.name);
 
   // Remove password from response
   newUser.password = undefined;
