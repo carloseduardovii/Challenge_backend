@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
-const path = require('path');
 
 // Controllers
 const { globalErrorHandler } = require('./controllers/errorsController');
@@ -11,11 +10,9 @@ const { usersRouters } = require('./routes/usersRoutes');
 const { characterRoutes } = require('./routes/characterRoutes');
 const { movieRoutes } = require('./routes/movieRoutes');
 const { genreRoutes } = require('./routes/genreRoutes');
-const { viewsRoutes } = require('./routes/viewsRoute');
 
 //utils
 const multer = require('multer');
-const { dirname } = require('path');
 
 // Init express app
 const app = express();
@@ -31,10 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Set Pug as template engine email
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
-
-// Enable static assets email
-//app.use(express.static('public'));
 
 // Limit IP requests
 const limiter = rateLimit({
@@ -46,7 +39,6 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Endpoints
-app.use('/', viewsRoutes);
 app.use('/api/v1/characters', characterRoutes);
 app.use('/api/v1/movies', movieRoutes);
 app.use('/api/v1/genres', genreRoutes);

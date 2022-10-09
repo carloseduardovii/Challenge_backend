@@ -27,9 +27,7 @@ class Email {
     //Get the pug file that needs to be send
     const html = pug.renderFile(
       `${__dirname}/../views/emails/${template}.pug`,
-      {
-        emailData,
-      }
+      emailData
     );
 
     await this.newTransport().sendMail({
