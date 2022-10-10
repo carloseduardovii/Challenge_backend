@@ -21,10 +21,6 @@ const initModels = () => {
   // 1 Genre ==> many movies
   Genre.hasMany(Movie, { foreignKey: 'genreId' });
   Movie.belongsTo(Genre);
-
-  // 1 Movie ==> one genre
-  Movie.hasOne(Genre);
-  Genre.belongsTo(Movie);
 };
 
 module.exports = { initModels };

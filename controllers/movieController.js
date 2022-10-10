@@ -1,9 +1,5 @@
-const {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  getStorage,
-} = require('firebase/storage');
+const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
+const { Op } = require('sequelize');
 
 //models
 const { Movie } = require('../models/movieModel');
@@ -18,11 +14,19 @@ const { storage } = require('../utils/firebase');
 
 //CRUD's
 const getAllMovies = catchAsync(async (req, res, next) => {
+  const { title } = req.query;
+
   const movies = await Movie.findAll({
-    where: { status: 'active' },
+    where: {
+      status: 'active',
+      title: { [Op.or]: [title] },
+    },
     attributes: { exclude: ['createdAt', 'updatedAt'] },
-    include: { model: Genre },
-    include: { model: Character, attributes: ['characterImgUrl', 'name'] },
+    //order: [['releaseDate']],
+    include: [
+      { model: Genre },
+      { model: Character, attributes: ['characterImgUrl', 'name'] },
+    ],
   });
 
   const moviesPromise = movies.map(async movie => {
@@ -39,14 +43,16 @@ const getAllMovies = catchAsync(async (req, res, next) => {
   res.status(200).json({ movies: moviesResolve });
 });
 
-const getMovieByParameter = catchAsync(async (req, res, next) => {
+const getMovieById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   const movie = await Movie.findOne({
     where: { id, status: 'active' },
     attributes: ['movieImgUrl', 'title', 'releaseDate', 'rate', 'genreId'],
-    include: { model: Genre, attributes: ['name'] },
-    include: { model: Character, attributes: ['characterImgUrl', 'name'] },
+    include: [
+      { model: Genre, attributes: ['name'] },
+      { model: Character, attributes: ['characterImgUrl', 'name'] },
+    ],
   });
 
   //Get URL image from firebase
@@ -115,7 +121,7 @@ const deleteMovie = catchAsync(async (req, res, next) => {
 
 module.exports = {
   getAllMovies,
-  getMovieByParameter,
+  getMovieById,
   createMovie,
   updateMovie,
   deleteMovie,

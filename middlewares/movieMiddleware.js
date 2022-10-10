@@ -1,5 +1,6 @@
 // models
 const { Movie } = require('../models/movieModel');
+const { Genre } = require('../models/genreModel');
 
 //utils
 const { catchAsync } = require('../utils/catchAsync');
@@ -14,10 +15,23 @@ const movieExist = catchAsync(async (req, res, next) => {
     return next(new AppError('¡Sorry! Movie does not exist', 404));
   }
 
-  //Add character data to the req object
   req.movie = movie;
 
   next();
 });
 
-module.exports = { movieExist };
+const genreExist = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const genre = await Genre.findOne({ where: { id, status: 'active' } });
+
+  if (!genre) {
+    return next(new AppError('¡Sorry! Genre does not exist', 404));
+  }
+
+  req.genre = genre;
+
+  next();
+});
+
+module.exports = { movieExist, genreExist };

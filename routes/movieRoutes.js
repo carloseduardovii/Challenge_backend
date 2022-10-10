@@ -1,7 +1,7 @@
 const express = require('express');
 
 //middlewares
-const { movieExist } = require('../middlewares/movieMiddleware');
+const { movieExist, genreExist } = require('../middlewares/movieMiddleware');
 const {
   protectToken,
   protectAdmin,
@@ -11,7 +11,7 @@ const {
 //controlles
 const {
   getAllMovies,
-  getMovieByParameter,
+  getMovieById,
   createMovie,
   updateMovie,
   deleteMovie,
@@ -23,7 +23,8 @@ const { upload } = require('../utils/multer');
 const router = express.Router();
 
 router.route('/').get(getAllMovies);
-router.route('/:id').get(movieExist, getMovieByParameter);
+
+router.route('/:id').get(movieExist, getMovieById);
 
 router.use(protectToken, protectAdmin);
 router.get('/check-token', checkToken);
